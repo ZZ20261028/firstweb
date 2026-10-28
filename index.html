@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <!-- FontAwesome for the hamburger menu icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>AZoom | Car Rental</title>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header>
+        <!-- Logo and Home Link -->
+        <a href="#" id="home-logo" class="logo-container">
+            <!-- Yellow cartoon car icon -->
+            <img src="3202926.png" alt="Car Icon" class="header-car-icon">
+            <span class="company-name">AZoom Car Rental</span>
+        </a>
+        
+        <div class="topnav">
+            <!-- User Profile Area (Hidden by default until logged in) -->
+            <div id="profile-icon" class="p-container" style="display: none;"> 
+                <span class="welcomeMsg">Welcome</span>
+                <button id="myBookingsBtn" class="btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.8rem; background: #3182ce;">My Bookings</button>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+            <!-- Login Button (Visible by default) -->
+            <button id="authBtn">Log In</button>
+            
+            <!-- Mobile Menu Icon -->
+            <a href="javascript:void(0);" class="icon1" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Login / Register Modal (Popup) -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <form id="authForm">
+                <h3 id="formTitle">Log In</h3> 
+                
+                <div class="input_box">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" maxlength="15" required/>
+                </div>
+                
+                <div class="input_box">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required />
+                </div>
+                
+                <!-- Confirm Password box (Hidden during Log In, shown during Sign Up) -->
+                <div class="input_box" id="confirm-password-box" style="display: none;">
+                    <label for="confirm-password">Confirm Password:</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm your password" /> 
+                </div>
+                
+                <button type="submit" class="btn-primary">Log In</button>
+                
+                <p id="switchForm">
+                    Don't have an account? <a href="#" id="switchToRegister">Sign up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Success Modal -->
+    <div id="successModal" class="modal hidden">
+        <div class="modal-content">
+            <h1 id="successModalTitle">Booking Successful</h1> 
+            <div class="confirmation-box">                  
+                <p>Thank you for booking with us.</p>
+                <p>SMS & E-Mail confirmation has been sent.</p>
+            </div>
+            <button id="redirectBtn" class="btn-success">Return to Home</button>
+        </div>
+    </div>
+
+    <!-- Main Navigation Links -->
+    <div id="myLinks">
+        <a href="#" id="nav-home">Home</a>
+        <a href="#" id="nav-fleet">Our Fleet</a>
+        <a href="#" id="nav-renting">How to rent & Locations</a>
+        <a href="#" id="nav-admin">Staff Portal</a>
+    </div>
+    
+    <main id="content">
+
+        <!-- 1. HOME SECTION -->
+        <section id="home-section">
+            <!-- EV Advertisement Card -->
+            <div class="home-container">
+                <div class="text-content">
+                    <h2>Experience driving while being eco!</h2>
+                    <p>Rent an electric vehicle in Singapore at the lowest guaranteed rates! We offer the largest fleet of electric vehicles (EVs). Book your EV today and enjoy an eco-friendly ride!</p>
+                    <button class="btn-success" type="button" onclick="checkLoginAndGo('ev')">Rent an EV</button>  
+                </div>
+                <div class="image-content">
+                    <img src="Home Electric Car Images.jpg" alt="EV Charging" class="car-picture">
+                </div>
+            </div>
+        
+            <!-- Petrol Advertisement Card -->
+            <div class="aboutus-container">
+                <div class="image-content">
+                    <img src="Home Oil Truck Images.jpg" alt="Petrol Car" class="car-picture">
+                </div>
+                <div class="text-content">
+                    <h2>Prefer a Petrol Car?</h2>
+                    <p>Looking for a traditional driving experience? Our well-maintained petrol vehicles offer reliability and performance. Choose from a wide range of sedans and SUVs.</p>
+                    <button class="btn-primary" type="button" onclick="checkLoginAndGo('petrol')">Rent a Petrol Car</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 2. FLEET SECTION (Cars are hardcoded in HTML) -->
+        <section id="fleet-section" class="hidden">
+            <div class="fleetTitle">
+                <h1>Our Fleet</h1>
+                <p class="subtitle">Choose your perfect vehicle</p>
+                <!-- Filter Buttons -->
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterCars('all', this)">All Vehicles</button>
+                    <button class="filter-btn" onclick="filterCars('ev', this)">Electric (EV)</button>
+                    <button class="filter-btn" onclick="filterCars('petrol', this)">Petrol</button>
+                </div>
+            </div>
+            
+            <div id="fleetContainer" class="fleetContainer">
+                <!-- Car 1: EV -->
+                <div class="fleetItem" data-type="ev">
+                    <img src="BMW iX1.jpg" alt="BMW iX1">
+                    <p class="type-tag">Electric (EV)</p>
+                    <h1>$95 <small>/ day</small></h1>
+                    <span>
+                        <h2>BMW iX1</h2>
+                        <!-- Pass name, price, and image link to JS -->
+                        <button class="rent-btn" onclick="selectCar('BMW iX1', 95, 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400')">Rent car</button> 
+                    </span>
+                </div>
+
+                <!-- Car 2: EV -->
+                <div class="fleetItem" data-type="ev">
+                    <img src="BYD Seal.jpg" alt="BYD Seal">
+                    <p class="type-tag">Electric (EV)</p>
+                    <h1>$75 <small>/ day</small></h1>
+                    <span>
+                        <h2>BYD Seal</h2>
+                        <button class="rent-btn" onclick="selectCar('BYD Seal', 75, 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400')">Rent car</button> 
+                    </span>
+                </div>
+
+                <!-- Car 3: EV -->
+                <div class="fleetItem" data-type="ev">
+                    <img src="Hyundai Ioniq 5.jpg" alt="Hyundai Ioniq 5">
+                    <p class="type-tag">Electric (EV)</p>
+                    <h1>$75 <small>/ day</small></h1>
+                    <span>
+                        <h2>Hyundai Ioniq 5</h2>
+                        <button class="rent-btn" onclick="selectCar('Hyundai Ioniq 5', 75, 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400')">Rent car</button> 
+                    </span>
+                </div>
+
+                <!-- Car 4: EV -->
+                <div class="fleetItem" data-type="ev">
+                    <img src="Tesla Model 3.jpg" alt="Tesla Model 3">
+                    <p class="type-tag">Electric (EV)</p>
+                    <h1>$90 <small>/ day</small></h1>
+                    <span>
+                        <h2>Tesla Model 3</h2>
+                        <button class="rent-btn" onclick="selectCar('Tesla Model 3', 90, 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400')">Rent car</button> 
+                    </span>
+                </div>
+
+                <!-- Car 5: Petrol -->
+                <div class="fleetItem" data-type="petrol">
+                    <img src="Toyota Camry.jpg" alt="Toyota Camry">
+                    <p class="type-tag">Petrol</p>
+                    <h1>$85 <small>/ day</small></h1>
+                    <span>
+                        <h2>Toyota Camry</h2>
+                        <button class="rent-btn" onclick="selectCar('Toyota Camry', 85, 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400')">Rent car</button> 
+                    </span>
+                </div>
+
+                <!-- Car 6: Petrol -->
+                <div class="fleetItem" data-type="petrol">
+                    <img src="Honda Accord.jpg" alt="Honda Accord">
+                    <p class="type-tag">Petrol</p>
+                    <h1>$80 <small>/ day</small></h1>
+                    <span>
+                        <h2>Honda Accord</h2>
+                        <button class="rent-btn" onclick="selectCar('Honda Accord', 80, 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=400')">Rent car</button> 
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. BOOKING FORM SECTION -->
+        <section id="car-selected-booking-section" class="hidden">
+            <div class="bookingTitle">
+                <h1>Reservation Details</h1>
+            </div>
+            <form id="bookingCar-form">
+                <!-- Shows selected car info -->
+                <div class="car-details">
+                    <img id="selected-car-image" src="" alt="Selected Car Image" class="selected-car-img" />
+                    <div>
+                        <h2 id="selected-car-name">Car Model Name</h2>
+                        <p id="selected-car-price" class="price-tag"></p>
+                    </div>
+                </div>
+                
+                <h2>Personal Particulars</h2>
+                <div class="elem-group">
+                    <label for="name">Your Name:</label>
+                    <input type="text" id="name" name="booking_name" placeholder="John Doe" pattern="[A-Za-z\s]{3,20}" required>
+                </div>
+                <div class="elem-group">
+                    <label for="email">Your E-mail:</label>
+                    <input type="email" id="email" name="booking_email" placeholder="john.doe@email.com" required>
+                </div>
+                <div class="elem-group">
+                    <label for="phone">Your Phone Number:</label>
+                    <!-- Pattern allows any 8 digits -->
+                    <input type="tel" id="phone" name="booking_phone" placeholder="XXXXXXXX" pattern="[0-9]{8}" maxlength="8" required>
+                </div>
+                
+                <hr>
+                <h2>Rental Details</h2>
+                <div class="elem-group inlined">
+                    <label for="pickupDate">Pick-up Date:</label>
+                    <input type="date" id="pickupDate" name="pickupDate" required>
+                </div>
+                <div class="elem-group inlined">
+                    <label for="returnDate">Return Date:</label>
+                    <input type="date" id="returnDate" name="returnDate" required>
+                </div>
+                <div class="elem-group inlined">
+                    <label for="pickupLocation">Pick up Location:</label>
+                    <select id="pickupLocation" name="pickupLocation" required>
+                        <option value="">Select Carpark</option>
+                        <option value="Ion Orchard">Ion Orchard</option>
+                        <option value="Bugis+">Bugis+</option>
+                    </select>
+                </div>
+                <div class="elem-group inlined">
+                    <label for="returnLocation">Return Location:</label>
+                    <select id="returnLocation" name="returnLocation" required>
+                        <option value="">Select Carpark</option>
+                        <option value="Ion Orchard">Ion Orchard</option>
+                        <option value="Bugis+">Bugis+</option>
+                    </select>  
+                </div>
+                
+                <hr>
+                <h2>Payment Details</h2>
+                <div class="elem-group inlined">
+                    <label for="cardholder">Cardholder Name:</label>
+                    <input type="text" id="cardholder" placeholder="John Doe" pattern="[A-Za-z\s]{3,20}" required>
+                </div>
+                <div class="elem-group inlined">
+                    <label for="cvv">CVV:</label>
+                    <input type="text" id="cvv" placeholder="***" pattern="[0-9]{3}" maxlength="3" required>
+                </div>
+                <div class="elem-group">
+                    <label for="cardNumber">Card Number:</label>
+                    <!-- Pattern allows any 16 digits -->
+                    <input type="text" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" pattern="[0-9]{16}" maxlength="16" required>
+                    <p class="hint">*Any 16-digit number is acceptable for this demo</p>
+                </div>
+                <button id="reserveBtn" class="btn-success btn-block" type="submit">Reserve Now</button>
+            </form>
+        </section>
+
+        <!-- 4. MY BOOKINGS SECTION (User Profile) -->
+        <section id="my-bookings-section" class="hidden">
+            <div class="bookingTitle">
+                <h1>My Bookings</h1>
+            </div>
+            <div class="admin-table-container" style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                <table id="my-bookings-table" style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Car Model</th>
+                            <th>Dates</th>
+                            <th>Status</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="my-bookings-tbody">
+                        <!-- Data inserted via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 5. HOW TO RENT & LOCATIONS SECTION -->
+        <section id="how-to-rent-section" class="hidden">
+            <div class="container">
+                <div id="rentTitle" class="section-header">
+                    <h1>How to Rent with Us</h1>
+                    <p>Follow these easy steps for a seamless booking experience</p>
+                </div>
+                
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-icon">1</div>
+                        <div class="step-text">
+                            <h3>Select and Reserve</h3>
+                            <p>Browse our fleet and choose the perfect vehicle.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">2</div>
+                        <div class="step-text">
+                            <h3>Pick Up</h3>
+                            <p>Visit our pickup location to collect your vehicle.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">3</div>
+                        <div class="step-text">
+                            <h3>Drive and Enjoy</h3>
+                            <p>Enjoy your ride and travel with peace of mind.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">4</div>
+                        <div class="step-text">
+                            <h3>Return</h3>
+                            <p>Park at the pre-selected return location.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">5</div>
+                        <div class="step-text">
+                            <h3>Inspection</h3>
+                            <p>Our agent will inspect the vehicle.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">6</div>
+                        <div class="step-text">
+                            <h3>Payment</h3>
+                            <p>Final cost charged to your credit card.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Maps Section -->
+                <div class="map-section">
+                    <h2>Pickup and Return Locations</h2>
+                    <p>Choose from our convenient locations for pick up and return.</p>
+                    <div class="map-container">
+                        <div class="location">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3277.24424742954!2d103.82940646045317!3d1.3037839969099854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da198de9aaaabb%3A0x996bdb092f510665!2sION%20Orchard!5e1!3m2!1sen!2ssg!4v1729850098209!5m2!1sen!2ssg" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            <p>Address: 2 Orchard Turn, Singapore 238801</p>
+                        </div>
+                        <div class="location">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3277.249684299072!2d103.85164417394502!3d1.2996008617374424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da19baef4923c1%3A0xd2dad49697017fb9!2sBugis%2B!5e1!3m2!1sen!2ssg!4v1729850230217!5m2!1sen!2ssg" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            <p>Address: 201 Victoria St, Singapore 188067</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ADMIN / STAFF PORTAL -->
+        <section id="admin-section" class="hidden">
+            <div class="admin-container">
+                <h1>Staff Admin Panel</h1>
+                <p class="admin-subtitle">Manage car rental lifecycle: pick-up, return, inspection, and billing.</p>
+
+                <div class="admin-grid">
+                    <!-- Step 2 -->
+                    <div class="admin-card">
+                        <h2>2. Confirm Pick-Up</h2>
+                        <p>Enter booking ID to confirm customer collected the car.</p>
+                        <input type="text" id="pickup-booking-id" placeholder="Booking ID (e.g., AZ-1001)">
+                        <button class="btn-primary" onclick="confirmPickup()">Confirm Pick-Up</button>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="admin-card">
+                        <h2>3. Confirm Return</h2>
+                        <p>Enter booking ID after customer returns the car.</p>
+                        <input type="text" id="return-booking-id" placeholder="Booking ID">
+                        <button class="btn-primary" onclick="confirmReturn()">Confirm Return</button>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="admin-card">
+                        <h2>4. Inspect Car</h2>
+                        <p>Check for damages and update status.</p>
+                        <input type="text" id="inspect-booking-id" placeholder="Booking ID">
+                        <label><input type="checkbox" id="damage-checkbox"> Car has damages (add $150)</label>
+                        <button class="btn-primary" onclick="inspectCar()">Update Inspection</button>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="admin-card">
+                        <h2>5. Final Bill</h2>
+                        <p>Generate and process final payment.</p>
+                        <input type="text" id="billing-booking-id" placeholder="Booking ID">
+                        <button class="btn-success" onclick="payFinalBill()">Pay Final Bill</button>
+                    </div>
+                </div>
+
+                <div class="admin-table-container">
+                    <h2>All Bookings</h2>
+                    <table id="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Car</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-tbody">
+                            <!-- Data inserted via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="admin-log">
+                    <h2>System Log</h2>
+                    <p id="admin-log-message">No actions yet.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footerContainer">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: contact_us@azoom.com</p>
+                <p>Phone: +65 6777 8888</p>
+                <p>Office Address: 123 Electric Ave, Singapore 123321</p>
+                <p>Operating Hours: 8am - 10pm daily</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="bottom-bar">
+        <p>&copy; 2024 AZoom Car Rental. All rights reserved.</p>
+    </div>
+
+    <!-- Link to JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
